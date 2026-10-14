@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.42](https://github.com/kunchenguid/chrome-devtools-axi/compare/chrome-devtools-axi-v0.1.41...chrome-devtools-axi-v0.1.42) (2026-10-13)
+
+
+### Bug Fixes
+
+* **cli:** split long duration waits so they outlast the MCP request timeout ([#174](https://github.com/kunchenguid/chrome-devtools-axi/issues/174)) ([ba2c876](https://github.com/kunchenguid/chrome-devtools-axi/commit/ba2c876d0947c2a91d5aba68f00d66f884e1e879))
+
 ## [0.1.41](https://github.com/kunchenguid/chrome-devtools-axi/compare/chrome-devtools-axi-v0.1.40...chrome-devtools-axi-v0.1.41) (2026-10-12)
 
 

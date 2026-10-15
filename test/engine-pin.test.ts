@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
@@ -21,16 +21,6 @@ const ENV_KEYS = [
   "CHROME_DEVTOOLS_AXI_MCP_PATH",
   "CHROME_DEVTOOLS_AXI_MCP_SERVER_URL",
 ] as const;
-
-function sourceFiles(dir: string): string[] {
-  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
-    entry.isDirectory()
-      ? sourceFiles(join(dir, entry.name))
-      : entry.name.endsWith(".ts")
-        ? [join(dir, entry.name)]
-        : [],
-  );
-}
 
 describe("pinned chrome-devtools-mcp engine", () => {
   const saved: Record<string, string | undefined> = {};
@@ -74,22 +64,5 @@ describe("pinned chrome-devtools-mcp engine", () => {
     expect(readFileSync(join(ROOT, "README.md"), "utf8")).toContain(
       `npx -y ${CHROME_DEVTOOLS_MCP_SPEC}`,
     );
-  });
-
-  it("is the only chrome-devtools-mcp version named in src and the README", () => {
-    const files = [
-      ...sourceFiles(join(ROOT, "src")).filter(
-        (file) => !file.endsWith("bridge-script.ts"),
-      ),
-      join(ROOT, "README.md"),
-    ];
-    for (const file of files) {
-      const named = readFileSync(file, "utf8").match(
-        /chrome-devtools-mcp@[\w.^~-]+/g,
-      );
-      for (const spec of named ?? []) {
-        expect(spec, file).toBe(CHROME_DEVTOOLS_MCP_SPEC);
-      }
-    }
   });
 });

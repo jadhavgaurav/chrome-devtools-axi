@@ -587,7 +587,7 @@ describe("resolveTransportSpec", () => {
     const spec = resolveTransportSpec();
     expect(spec.command).toBe(process.execPath);
     expect(spec.args[0]).toBe("/opt/mcp/build/src/bin/chrome-devtools-mcp.js");
-    // Strips the npx-only `-y, chrome-devtools-mcp@latest` prefix
+    // Strips the npx-only `-y, CHROME_DEVTOOLS_MCP_SPEC` prefix
     expect(spec.args).not.toContain("-y");
     expect(spec.args).not.toContain(CHROME_DEVTOOLS_MCP_SPEC);
     // Preserves the mcp-specific args

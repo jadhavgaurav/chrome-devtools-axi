@@ -17,7 +17,10 @@
  */
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import {
+  getDefaultEnvironment,
+  StdioClientTransport,
+} from "@modelcontextprotocol/sdk/client/stdio.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { ListRootsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
@@ -1004,8 +1007,21 @@ export function resolveTransport(
   return { kind: "stdio", spec: resolveTransportSpec(probe) };
 }
 
+/** Preserve the SDK defaults and the MCP usage-statistics opt-out switches. */
+export function buildMcpChildEnv(
+  env: NodeJS.ProcessEnv = process.env,
+): Record<string, string> {
+  const childEnv = getDefaultEnvironment();
+  for (const key of ["CHROME_DEVTOOLS_MCP_NO_USAGE_STATISTICS", "CI"]) {
+    const value = env[key];
+    if (value !== undefined) childEnv[key] = value;
+  }
+  return childEnv;
+}
+
 const DEFAULT_BRIDGE_TRANSPORT_FACTORIES: BridgeTransportFactories = {
-  createStdio: (spec) => new StdioClientTransport(spec),
+  createStdio: (spec) =>
+    new StdioClientTransport({ ...spec, env: buildMcpChildEnv() }),
   createHttp: (url) => new StreamableHTTPClientTransport(url),
 };
 
